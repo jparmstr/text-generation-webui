@@ -743,7 +743,7 @@ def create_interface():
                 with gr.Row():
                     with gr.Column(scale=4):
                         with gr.Tab('Raw'):
-                            shared.gradio['textbox'] = gr.Textbox(value=default_text, elem_classes="textbox", lines=27)
+                            shared.gradio['textbox'] = gr.Textbox(value=default_text, elem_id="raw_textbox", elem_classes="textbox", lines=27)
 
                         with gr.Tab('Markdown'):
                             shared.gradio['markdown_render'] = gr.Button('Render')
@@ -1073,6 +1073,16 @@ def create_interface():
 
         if shared.settings['dark_theme']:
             shared.gradio['interface'].load(lambda: None, None, None, _js="() => document.getElementsByTagName('body')[0].classList.add('dark')")
+
+        # Inject javascript to remove the 'scroll-hide' class from the textarea in the Raw Textbox
+        js += """
+        function fixRawTextBoxScroll() {
+            let rawTextBox_textArea = document.querySelector('#raw_textbox textarea')
+            rawTextBox_textArea.classList.remove('scroll-hide')
+        }
+
+        fixRawTextBoxScroll();
+        """
 
         shared.gradio['interface'].load(lambda: None, None, None, _js=f"() => {{{js}}}")
         shared.gradio['interface'].load(partial(ui.apply_interface_values, {}, use_persistent=True), None, gradio(ui.list_interface_input_elements()), show_progress=False)
