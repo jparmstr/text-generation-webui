@@ -1076,12 +1076,12 @@ def create_interface():
 
         # Inject javascript to remove the 'scroll-hide' class from the textarea in the Raw Textbox
         js += """
-        function fixRawTextBoxScroll() {
-            let rawTextBox_textArea = document.querySelector('#raw_textbox textarea')
+        function enableScrollBarOnElement(id) {
+            let rawTextBox_textArea = document.querySelector(id)
             rawTextBox_textArea.classList.remove('scroll-hide')
         }
 
-        fixRawTextBoxScroll();
+        enableScrollBarOnElement('#raw_textbox textarea');
         """
 
         shared.gradio['interface'].load(lambda: None, None, None, _js=f"() => {{{js}}}")
